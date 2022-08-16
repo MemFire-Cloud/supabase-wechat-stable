@@ -1,4 +1,4 @@
-import { StorageBucketApi, StorageFileApi } from './lib'
+import { StorageBucketApi, StorageFileApi } from './lib/index'
 
 export class SupabaseStorageClient extends StorageBucketApi {
   constructor(url: string, headers: { [key: string]: string } = {}) {

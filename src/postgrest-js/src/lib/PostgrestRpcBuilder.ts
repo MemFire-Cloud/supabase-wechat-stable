@@ -7,7 +7,7 @@ export default class PostgrestRpcBuilder<T> extends PostgrestBuilder<T> {
     { headers = {}, schema }: { headers?: { [key: string]: string }; schema?: string } = {}
   ) {
     super({} as PostgrestBuilder<T>)
-    this.url = new URL(url)
+    this.url = new webkitURL(url)
     this.headers = { ...headers }
     this.schema = schema
   }

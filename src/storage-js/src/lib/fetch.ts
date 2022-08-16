@@ -60,13 +60,13 @@ async function _handleRequest(
       data: JSON.parse(wfRequestParams.body),
     }
     _fetch(url, wfRequestParams)
-      .then((result) => {
-        if (result.statusCode != 200 && result.statusCode != 201) throw result
+      .then((result: any) => {
+        if (result.statusCode != 200) throw result
         if (options?.noResolveJson) return resolve(result)
         return result
       })
-      .then((data) => resolve(data))
-      .catch((error) => handleError(error, reject))
+      .then((data: any) => resolve(data))
+      .catch((error: any) => handleError(error, reject))
   })
 }
 

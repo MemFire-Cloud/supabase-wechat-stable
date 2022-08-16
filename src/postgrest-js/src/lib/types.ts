@@ -95,7 +95,7 @@ export abstract class PostgrestBuilder<T> implements PromiseLike<PostgrestRespon
       header: this.headers,
       data: JSON.stringify(this.body),
     })
-      .then(async (res) => {
+      .then(async (res: any) => {
         let error = null
         let data = null
         let count = null
