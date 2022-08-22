@@ -89,7 +89,7 @@ export class StorageFileApi {
         // temporary fix till backend is updated to the latest storage-api version
         return { data: { Key: _path }, error: null }
       } else {
-        const error = await res.json()
+        const error = await res
         return { data: null, error }
       }
     } catch (error) {
