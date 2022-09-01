@@ -1,6 +1,6 @@
 {
   "name": "supabase-wechat-stable",
-  "version": "0.0.3",
+  "version": "0.1.4",
   "description": "Isomorphic Javascript client for Supabase.",
   "keywords": [
     "javascript",
@@ -39,7 +39,11 @@
     "wefetch": "^1.3.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@babel/preset-env": "^7.18.10",
     "@types/jest": "^26.0.13",
+    "babel-loader": "^8.2.5",
+    "babel-preset-es2015": "^6.24.1",
     "genversion": "^3.0.1",
     "husky": "^4.3.0",
     "jest": "^26.4.1",

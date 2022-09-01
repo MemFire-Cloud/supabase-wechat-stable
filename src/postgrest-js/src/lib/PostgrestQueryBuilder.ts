@@ -1,5 +1,6 @@
 import { PostgrestBuilder } from './types'
 import PostgrestFilterBuilder from './PostgrestFilterBuilder'
+let { URL } = require('../../../wechaturl-parse/index')
 
 export default class PostgrestQueryBuilder<T> extends PostgrestBuilder<T> {
   constructor(
@@ -7,7 +8,7 @@ export default class PostgrestQueryBuilder<T> extends PostgrestBuilder<T> {
     { headers = {}, schema }: { headers?: { [key: string]: string }; schema?: string } = {}
   ) {
     super({} as PostgrestBuilder<T>)
-    this.url = new webkitURL(url)
+    this.url = new URL(url)
     this.headers = { ...headers }
     this.schema = schema
   }
