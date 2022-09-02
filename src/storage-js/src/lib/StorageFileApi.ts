@@ -1,4 +1,4 @@
-import { FetchParameters, get, post, remove } from './fetch'
+import { FetchParameters } from './fetch'
 import { isBrowser } from './helpers'
 import { FileObject, FileOptions, SearchOptions } from './types'
 let _fetch = require('wefetch')
@@ -43,48 +43,43 @@ export class StorageFileApi {
   private async uploadOrUpdate(
     method: 'POST' | 'PUT',
     path: string,
-    fileBody:
-      | ArrayBuffer
-      | ArrayBufferView
-      | Blob
-      | Buffer
-      | File
-      | FormData
-      | NodeJS.ReadableStream
-      | ReadableStream<Uint8Array>
-      | URLSearchParams
-      | string,
+    fileBody: any,
     fileOptions?: FileOptions
   ): Promise<{ data: { Key: string } | null; error: Error | null }> {
     try {
-      let body
+      // let body
       const options = { ...DEFAULT_FILE_OPTIONS, ...fileOptions }
       const headers: Record<string, string> = {
         ...this.headers,
         ...(method === 'POST' && { 'x-upsert': String(options.upsert as boolean) }),
       }
 
-      if (typeof Blob !== 'undefined' && fileBody instanceof Blob) {
-        body = new FormData()
-        body.append('cacheControl', options.cacheControl as string)
-        body.append('', fileBody)
-      } else if (typeof FormData !== 'undefined' && fileBody instanceof FormData) {
-        body = fileBody
-        body.append('cacheControl', options.cacheControl as string)
-      } else {
-        body = fileBody
-        headers['cache-control'] = `max-age=${options.cacheControl}`
-        headers['content-type'] = options.contentType as string
-      }
+      // if (typeof Blob !== 'undefined' && fileBody instanceof Blob) {
+      //   body = new FormData()
+      //   body.append('cacheControl', options.cacheControl as string)
+      //   body.append('', fileBody)
+      // } else if (typeof FormData !== 'undefined' && fileBody instanceof FormData) {
+      //   body = fileBody
+      //   body.append('cacheControl', options.cacheControl as string)
+      // } else {
+      //   body = fileBody
+      //   headers['cache-control'] = `max-age=${options.cacheControl}`
+      //   headers['content-type'] = options.contentType as string
+      // }
 
       const _path = this._getFinalPath(path)
+      const FormData = require('./formData.js')
+      let formData = new FormData()
+      formData.append('name', 'value')
+      formData.appendFile('file', fileBody.tempFilePath, path)
+      let data = formData.getData()
+      headers['content-type'] = data.contentType
       const res = await _fetch(`${this.url}/object/${_path}`, {
         method,
-        data: body as BodyInit,
+        data: data.buffer,
         header: headers,
       })
-
-      if (res.ok) {
+      if (res.statusCode == 200) {
         // const data = await res.json()
         // temporary fix till backend is updated to the latest storage-api version
         return { data: { Key: _path }, error: null }
@@ -164,10 +159,10 @@ export class StorageFileApi {
     toPath: string
   ): Promise<{ data: { message: string } | null; error: Error | null }> {
     try {
-      const data = await post(
+      const data = await _fetch(
         `${this.url}/object/move`,
         { bucketId: this.bucketId, sourceKey: fromPath, destinationKey: toPath },
-        { headers: this.headers }
+        { header: this.headers }
       )
       return { data, error: null }
     } catch (error) {
@@ -191,10 +186,10 @@ export class StorageFileApi {
   }> {
     try {
       const _path = this._getFinalPath(path)
-      let data = await post(
+      let data = await _fetch(
         `${this.url}/object/sign/${_path}`,
         { expiresIn },
-        { headers: this.headers }
+        { header: this.headers }
       )
       const signedURL = `${this.url}${data.signedURL}`
       data = { signedURL }
@@ -212,10 +207,11 @@ export class StorageFileApi {
   async download(path: string): Promise<{ data: Blob | null; error: Error | null }> {
     try {
       const _path = this._getFinalPath(path)
-      const res = await get(`${this.url}/object/${_path}`, {
-        headers: this.headers,
+      const res = await _fetch(`${this.url}/object/${_path}`, {
+        header: this.headers,
         noResolveJson: true,
       })
+
       const data = await res.blob()
       return { data, error: null }
     } catch (error) {
@@ -252,10 +248,10 @@ export class StorageFileApi {
    */
   async remove(paths: string[]): Promise<{ data: FileObject[] | null; error: Error | null }> {
     try {
-      const data = await remove(
+      const data = await _fetch(
         `${this.url}/object/${this.bucketId}`,
         { prefixes: paths },
-        { headers: this.headers }
+        { header: this.headers }
       )
       return { data, error: null }
     } catch (error) {
@@ -306,10 +302,10 @@ export class StorageFileApi {
   ): Promise<{ data: FileObject[] | null; error: Error | null }> {
     try {
       const body = { ...DEFAULT_SEARCH_OPTIONS, ...options, prefix: path || '' }
-      const data = await post(
+      const data = await _fetch(
         `${this.url}/object/list/${this.bucketId}`,
         body,
-        { headers: this.headers },
+        { header: this.headers },
         parameters
       )
       return { data, error: null }
