@@ -162,7 +162,7 @@ export class StorageFileApi {
       const data = await _fetch(
         `${this.url}/object/move`,
         { bucketId: this.bucketId, sourceKey: fromPath, destinationKey: toPath },
-        { header: this.headers }
+        { header: this.headers, method: 'POST' }
       )
       return { data, error: null }
     } catch (error) {
@@ -251,7 +251,7 @@ export class StorageFileApi {
       const data = await _fetch(
         `${this.url}/object/${this.bucketId}`,
         { prefixes: paths },
-        { header: this.headers }
+        { header: this.headers, method: 'DELETE' }
       )
       return { data, error: null }
     } catch (error) {
@@ -305,7 +305,7 @@ export class StorageFileApi {
       const data = await _fetch(
         `${this.url}/object/list/${this.bucketId}`,
         body,
-        { header: this.headers },
+        { header: this.headers, method: 'POST', data: body },
         parameters
       )
       return { data, error: null }
