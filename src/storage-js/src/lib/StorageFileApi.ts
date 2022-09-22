@@ -204,17 +204,13 @@ export class StorageFileApi {
    *
    * @param path The file path to be downloaded, including the path and file name. For example `folder/image.png`.
    */
-  async download(path: string): Promise<{ data: Blob | null; error: Error | null }> {
+  async download(path: string): Promise<{ data: any | null; error: Error | null }> {
     try {
       const _path = this._getFinalPath(path)
-      const res = await _fetch(`${this.url}/object/${_path}`, {
-        header: this.headers,
-        noResolveJson: true,
-      })
-
-      const data = await res.blob()
+      const res = `${this.url}/object/public/${_path}`
+      const data = res
       return { data, error: null }
-    } catch (error) {
+    } catch (error: any) {
       return { data: null, error }
     }
   }
