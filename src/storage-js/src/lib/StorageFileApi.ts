@@ -300,7 +300,6 @@ export class StorageFileApi {
       const body = { ...DEFAULT_SEARCH_OPTIONS, ...options, prefix: path || '' }
       const data = await _fetch(
         `${this.url}/object/list/${this.bucketId}`,
-        body,
         { header: this.headers, method: 'POST', data: body },
         parameters
       )

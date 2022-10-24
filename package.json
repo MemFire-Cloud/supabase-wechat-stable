@@ -1,6 +1,6 @@
 {
   "name": "supabase-wechat-stable",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Isomorphic Javascript client for Supabase.",
   "keywords": [
     "javascript",
